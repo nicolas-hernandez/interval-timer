@@ -14,11 +14,13 @@
   },
   "devDependencies": {
     "electron": "^11.0.1",
+    "electron-packager": "^15.1.0",
     "eslint": "^7.13.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "win":"electron-packager . interval-timer --platform=win32 --arch=x64"
   },
   "repository": {
     "type": "git",
