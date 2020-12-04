@@ -2,7 +2,8 @@
   "name": "intervaltimer",
   "version": "1.0.0",
   "description": "Interval timer app",
-  "main": "main.js",
+  "type": "module",
+  "main": "main.cjs",
   "dependencies": {
     "bootstrap": "^4.5.3",
     "bootstrap-material": "^4.1.51",

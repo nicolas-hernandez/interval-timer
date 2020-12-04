@@ -2,7 +2,7 @@
 
     html.rest, 
     .jumbotron.rest {
-        background: pink;
+        background: plink;
     }
 
     html.work,
@@ -117,7 +117,6 @@
         background: grey;
         color: #FFF;
         font-size: 24px;
-        opacity: 0.8;
     }
 
     .modalPause .close,
@@ -176,7 +175,7 @@
 
 	.modalAlert,
 	.modalReset {
-		font-size: 42px;
+		/* font-size: 42px; */
 	}
 
 
@@ -184,13 +183,13 @@
     .modalReset .closeReset,
     .modalReset .okReset {			
         height: 40px;
-        font-size: 40px;
+        /* font-size: 40px; */
     }
 
 
     .modalPause .pauseText,
     .modalReset .resetText {
-        font-size: 40px;
+        /* font-size: 40px; */
     }
 
     .modalReset .buttonDiv {
