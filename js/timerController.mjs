@@ -20,71 +20,94 @@ export class TimerController {
     }
 
 
-    initChrono() {
-        this.model.chronoState();
-        this.positionNavigator = 0;
-        /* TODO refactorizar */
-        this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
-        //this.timeRest.innerText =  10; // this.restValue.innerText;
-        document.getElementById('principalDiv').classList.add('rest');
+    getRestTime() {
+        return this.model.restValueInt;
+    }
 
-        //init clock        
-        this.textChrono.innerText = "Rest"; /* TODO refactorizar */
-        /* TODO refactorizar */
-        document.getElementsByTagName("html")[0].classList.add('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.add('rest');
-        /* TODO refactorizar */
+    getWorkTime() {
+        return this.model.workValueInt;
+    }
+
+    config() {
+        this.model.state = 1;
+        this.model.positionNavigator = 0;
+        this.model.workFinish = 0;
+    }
+
+    startWork() {
+        this.model.stateChrono = 2;
+        this.jukebox.playSound('alert');
+    }
+
+    pause() {
+        this.model.isPaused = true;
+    }
+
+    resume() {
+        this.model.isPaused = false;
+    }
+
+    configureTimer(sets, restTime, workTime) {
+        this.model.sets = sets;
+        this.model.restTime = restTime;
+        this.model.workTime = workTime;
+    }
+
+    initTimer(view) {
+        this.model.state = 2;
+        this.model.positionNavigator = 0;
+
         let restTime = 5; //this.restValue.innerText;
-        this.timeRestInt = restTime;
-        this.timeRest.innerText = formatTime(this.timeRestInt);
-        this.interval = setInterval(function() {
-            if (!this.isPaused) {
-                  if (restTime === 0) {
-                      if (this.stateChrono === 1) {              
-                        restTime = this.workValueInt;
-                        this.stateChrono = 2;
-                        this.textChrono.innerText = "Work"; /* TODO refactorizar */
-                        /* TODO refactorizar */
-                        document.getElementsByTagName("html")[0].classList.remove('rest');
-                        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
-                        document.getElementsByTagName("html")[0].classList.add('work');
-                        document.getElementsByClassName("jumbotron")[0].classList.add('work');
-                        /* TODO refactorizar */
-                          this.playSound('alert');
-                      } else {
-                          restTime = this.restValueInt;
-                          this.stateChrono = 1;
-                          this.textChrono.innerText = "Rest"; /* TODO refactorizar */
-                          this.workFinish += 1;                              
-                          if (this.workFinish >= this.setsValue.innerText){
-                              clearInterval(this.interval);
-                              this.playSound('gong');
-                            this.textChrono.innerText = "Finish !!!"; /* TODO refactorizar */
-                            clearInterval(this.interval);
-                            restTime = 0;
-                            setTimeout(function () {
-                                this.showConfig();
-                            }, this.timeReset);
-                          } else {
-                              this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
-                              /* TODO refactorizar */
-                              document.getElementsByTagName("html")[0].classList.remove('work');
-                              document.getElementsByClassName("jumbotron")[0].classList.remove('work');
-                              document.getElementsByTagName("html")[0].classList.add('rest');
-                              document.getElementsByClassName("jumbotron")[0].classList.add('rest');
-                              /* TODO refactorizar */
-                              this.playSound('gong2');
-                        }
-                      }
-                  } else {
-                    restTime -=1;
-                }
-                this.timeRestInt = restTime;
-                this.timeRest.innerText = formatTime(this.timeRestInt);
-                  if (restTime === 3) { 
-                      this.playSound('end');
-                  }
-              }
+        this.model.timeRestInt = restTime;
+        view.updateRestTime(this.model.timeRestInt);
+        view.updateCycle(0, this.model.sets);
+
+
+        this.interval = setInterval( () => {
+            this.timerTick(view);
         }, 1000);
+    }
+
+    timerTick(view) {
+        let restTime = this.model.timeRestInt;
+        if (!this.model.isPaused) {
+            if (restTime === 0) {
+                if (this.model.stateChrono === 1) {              
+                    view.workView();
+                    this.startWork();
+                    restTime = this.model.workValueInt;
+                } else {
+                    restTime = this.model.restValueInt;
+                    this.model.stateChrono = 1;
+                    this.model.workFinish += 1;                              
+                    view.restView();
+                    if (this.workFinish >= this.model.sets){
+                        clearInterval(this.interval);
+                        view.finishView();
+                        this.jukebox.playSound('gong');
+                        restTime = 0;
+                        setTimeout(function () {
+                            view.showConfig();
+                        }, this.model.timeReset);
+                    } else {
+                        view.updateCycle(this.model.workFinish, this.model.sets);
+                        this.jukebox.playSound('gong2');
+                    }
+                }
+            } else {
+                restTime -=1;
+            }
+            this.model.timeRestInt = restTime;
+            view.updateRestTime(this.model.timeRestInt);
+            if (restTime === 3) { 
+                this.jukebox.playSound('end');
+            }
+          }
+    }
+
+    resetTimer() {
+        clearInterval(this.interval);
+        this.model.stateChrono = 1;
+        this.model.workFinish = 0;
     }
 }

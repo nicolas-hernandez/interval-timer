@@ -25,11 +25,12 @@ export class TimerView {
         this.modalReset = document.getElementById('modalReset');
         this.noSleepVideo = document.getElementById('noSleepVideo');
         this.workTimeElement = document.getElementById('workTime');
+        this.workTime = 0;
 
         this.noSleepVideo.pause();
-        this.play.addEventListener('click', this.controller);
-        this.reset.addEventListener('click', this.controller);
-        this.pause.addEventListener('click', this.controller);
+        this.play.addEventListener('click', (e) => this.initChrono());
+        this.reset.addEventListener('click', (e) => this.resetChrono());
+        this.pause.addEventListener('click', (e) => this.pauseChrono());
 
         let classnameLess = document.getElementsByClassName('lessBtn');
         for (var li = 0; li < classnameLess.length; li++) {
@@ -42,7 +43,8 @@ export class TimerView {
 
         let classnameMore = document.getElementsByClassName('moreBtn');
         for (var i = 0; i < classnameMore.length; i++) {
-            classnameMore[i].addEventListener('click', this.moreValue);
+            // classnameMore[i].addEventListener('click', this.moreValue);
+            this.bindConfigButton(classnameMore[i], 'click', this.controller);
             classnameMore[i].addEventListener('mousedown', this.moreValueCont);
             classnameMore[i].addEventListener('touchstart', this.moreValueCont);
             classnameMore[i].addEventListener('mouseup', this.contEnd);
@@ -52,148 +54,112 @@ export class TimerView {
         this.updateWorkTime();
     }
 
+    bindConfigButton(element, eventName, handler) {
+        element.addEventListener(eventName, (e) => {
+            handler(e);
+            this.updateWorkTime();
+        });
+    }
+
+    updateRestTime(time) {
+        this.timeRest.innerText = formatTime(time);
+    }
+
+    updateCycle(finishedSets, totalSets) {
+        this.cycle.innerText = (finishedSets + 1) + "/" + totalSets;
+    }
+
+    updateWorkTime() {
+        let setsAmount = parseInt(this.setsValue.innerText);
+        let actualWorkTime = this.controller.getWorkTime() * setsAmount;
+        let restTime = this.controller.getRestTime() * (setsAmount - 1);
+        this.workTime = actualWorkTime + restTime;
+        this.workTimeElement.innerText = formatTime(this.workTime);
+    }
+
+    restView() {
+        this.textChrono.innerText = "Rest";
+        document.getElementsByTagName("html")[0].classList.remove('work');
+        document.getElementsByClassName("jumbotron")[0].classList.remove('work');
+        document.getElementsByTagName("html")[0].classList.add('rest');
+        document.getElementsByClassName("jumbotron")[0].classList.add('rest');
+    }
+
+    workView() {
+        this.textChrono.innerText = "Work";
+        document.getElementsByTagName("html")[0].classList.remove('rest');
+        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
+        document.getElementsByTagName("html")[0].classList.add('work');
+        document.getElementsByClassName("jumbotron")[0].classList.add('work');
+    }
+
+    finishView() {
+        this.textChrono.innerText = "Finish !!!";
+    }
 
     initChrono() {
         this.noSleepVideo.play();
         this.setDiv.classList.add("hide");
         this.chronoDiv.classList.remove("hide");
-        this.state = 2;
-        this.positionNavigator = 0;
-        /* TODO refactorizar */
-        this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
-        //this.timeRest.innerText =  10; // this.restValue.innerText;
-        document.getElementById('principalDiv').classList.add('rest');
 
-        //init clock        
-        this.textChrono.innerText = "Rest"; /* TODO refactorizar */
-        /* TODO refactorizar */
+        this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
+
+        this.textChrono.innerText = "Rest";
+        document.getElementById('principalDiv').classList.add('rest');
         document.getElementsByTagName("html")[0].classList.add('rest');
         document.getElementsByClassName("jumbotron")[0].classList.add('rest');
-        /* TODO refactorizar */
-        let restTime = 5; //this.restValue.innerText;
-        this.timeRestInt = restTime;
-        this.timeRest.innerText = formatTime(this.timeRestInt);
-        this.interval = setInterval(function() {
-            if (!this.isPaused) {
-                  if (restTime === 0) {
-                      if (this.stateChrono === 1) {              
-                        restTime = this.workValueInt;
-                        this.stateChrono = 2;
-                        this.textChrono.innerText = "Work"; /* TODO refactorizar */
-                        /* TODO refactorizar */
-                        document.getElementsByTagName("html")[0].classList.remove('rest');
-                        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
-                        document.getElementsByTagName("html")[0].classList.add('work');
-                        document.getElementsByClassName("jumbotron")[0].classList.add('work');
-                        /* TODO refactorizar */
-                          this.playSound('alert');
-                      } else {
-                          restTime = this.restValueInt;
-                          this.stateChrono = 1;
-                          this.textChrono.innerText = "Rest"; /* TODO refactorizar */
-                          this.workFinish += 1;                              
-                          if (this.workFinish >= this.setsValue.innerText){
-                              clearInterval(this.interval);
-                              this.playSound('gong');
-                            this.textChrono.innerText = "Finish !!!"; /* TODO refactorizar */
-                            clearInterval(this.interval);
-                            restTime = 0;
-                            setTimeout(function () {
-                                this.showConfig();
-                            }, this.timeReset);
-                          } else {
-                              this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
-                              /* TODO refactorizar */
-                              document.getElementsByTagName("html")[0].classList.remove('work');
-                              document.getElementsByClassName("jumbotron")[0].classList.remove('work');
-                              document.getElementsByTagName("html")[0].classList.add('rest');
-                              document.getElementsByClassName("jumbotron")[0].classList.add('rest');
-                              /* TODO refactorizar */
-                              this.playSound('gong2');
-                        }
-                      }
-                  } else {
-                    restTime -=1;
-                }
-                this.timeRestInt = restTime;
-                this.timeRest.innerText = formatTime(this.timeRestInt);
-                  if (restTime === 3) { 
-                      this.playSound('end');
-                  }
-              }
-        }, 1000);
+
+        this.controller.configureTimer(
+            parseInt(this.setsValue.innerText),
+            this.restValueInt,
+            this.workValueInt
+        );
+        this.controller.initTimer(this);
     }
 
     resetChrono() {
-        this.isPaused = true;
+        this.controller.pause();
+
         this.modalReset.classList.remove('hide');
 
         let okReset = document.getElementById("okReset");
         let closeReset = document.getElementById("closeReset");
         let closeResetFunction;
-        let okResetFunction = () => {
+        okReset.addEventListener("click", () => {
             this.isPaused = false;
             this.modalReset.classList.add('hide');
-            okReset.removeEventListener("click", okResetFunction);
-            closeReset.removeEventListener("click", closeResetFunction);
-            clearInterval(this.interval);
-            this.stateChrono = 1;
-            this.workFinish = 0;
+            // okReset.removeEventListener("click", okResetFunction);
+            // closeReset.removeEventListener("click", closeResetFunction);
+            this.controller.resetTimer();
             this.showConfig();
-        }
+        });
 
-        closeResetFunction = () => {        
+        closeReset.addEventListener("click", () => {        
             this.isPaused = false;
             this.modalReset.classList.add('hide');
-            okReset.removeEventListener("click", okResetFunction);
-            closeReset.removeEventListener("click", closeResetFunction);
-        }
+            // okReset.removeEventListener("click", okResetFunction);
+            // closeReset.removeEventListener("click", closeResetFunction);
+        });
 
-        okReset.addEventListener("click", okResetFunction);
-        closeReset.addEventListener("click", closeResetFunction);
-        /*
-          document.getElementById('okReset').addEventListener('click', () => {                  
-            this.isPaused = false;
-            this.modalReset.classList.add('hide');
-            document.getElementById('okReset').removeEventListener('click', ()=> {});
-            clearInterval(this.interval);
-            this.stateChrono = 1;
-            this.workFinish = 0;
-            this.showConfig();
-          }, false);
-          document.getElementById('closeReset').addEventListener('click', () => {                  
-            this.isPaused = false;
-            this.modalReset.classList.add('hide');
-            document.getElementById('closeReset').removeEventListener('click', ()=> {});
-          }, false);
-        */
     }
         
 
-    updateWorkTime() {
-        this.workTime = (this.workValueInt * parseInt(this.setsValue.innerText) ) + (this.restValueInt * (parseInt(this.setsValue.innerText) - 1) );
-        this.workTimeElement.innerText = formatTime(this.workTime);
-    }
-
     showConfig() {
         this.noSleepVideo.pause();
-         /* TODO refactorizar */
         document.getElementsByTagName("html")[0].classList.remove('work');
         document.getElementsByClassName("jumbotron")[0].classList.remove('work');
         document.getElementsByTagName("html")[0].classList.remove('rest');
         document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
-         /* TODO refactorizar */
         this.setDiv.classList.remove("hide");
         this.chronoDiv.classList.add("hide");
-        this.state = 1;
-        this.positionNavigator = 0;
-        this.workFinish = 0;
     }
 
     pauseChrono() {
+        this.controller.pause();
         this.isPaused = true;
         this.modalPause.classList.remove('hide');
         document.getElementById('closePause').addEventListener('click', () => {                  
+            this.controller.resume();
             this.isPaused = false;
             this.modalPause.classList.add('hide');
             document.getElementById('closePause').removeEventListener('click', ()=> {});
