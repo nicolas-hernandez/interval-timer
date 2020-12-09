@@ -15,10 +15,10 @@ class Jukebox {
 
 
 function initApp() {
-    var jukebox = new Jukebox();
-    var model = new TimerModel();
-    var controller = new TimerController(model, jukebox);
-    var view = new TimerView(controller);
+    let jukebox = new Jukebox();
+    let model = new TimerModel();
+    let controller = new TimerController(model, jukebox);
+    let view = new TimerView(controller);
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

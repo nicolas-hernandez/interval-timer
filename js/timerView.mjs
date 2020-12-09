@@ -32,6 +32,7 @@ export class TimerView {
         this.reset.addEventListener('click', (e) => this.resetChrono());
         this.pause.addEventListener('click', (e) => this.pauseChrono());
 
+        //TODO. somehow transform this into forEach
         let classnameLess = document.getElementsByClassName('lessBtn');
         for (var li = 0; li < classnameLess.length; li++) {
             classnameLess[li].addEventListener('click', this.lessValue);    
@@ -41,15 +42,25 @@ export class TimerView {
             classnameLess[li].addEventListener('touchend', this.contEnd);            
         }
 
-        let classnameMore = document.getElementsByClassName('moreBtn');
-        for (var i = 0; i < classnameMore.length; i++) {
-            // classnameMore[i].addEventListener('click', this.moreValue);
-            this.bindConfigButton(classnameMore[i], 'click', this.controller);
-            classnameMore[i].addEventListener('mousedown', this.moreValueCont);
-            classnameMore[i].addEventListener('touchstart', this.moreValueCont);
-            classnameMore[i].addEventListener('mouseup', this.contEnd);
-            classnameMore[i].addEventListener('touchend', this.contEnd);
-        }
+
+        this.bindConfigButton(document.getElementById('workMore'), 'click', (e) => {
+            this.controller.incrementWork(this);
+        });
+        this.bindConfigButton(document.getElementById('setsMore'), 'click', (e) => {
+            this.controller.incrementSets(this);
+        });
+        this.bindConfigButton(document.getElementById('restMore'), 'click', (e) => {
+            this.controller.incrementRest(this);
+        });
+        // let classnameMore = document.getElementsByClassName('moreBtn');
+        // for (var i = 0; i < classnameMore.length; i++) {
+        //     // classnameMore[i].addEventListener('click', this.moreValue);
+        //     let type = classnameMore[i].target.getAttribute('data-type');
+        //     classnameMore[i].addEventListener('mousedown', this.moreValueCont);
+        //     classnameMore[i].addEventListener('touchstart', this.moreValueCont);
+        //     classnameMore[i].addEventListener('mouseup', this.contEnd);
+        //     classnameMore[i].addEventListener('touchend', this.contEnd);
+        // }
 
         this.updateWorkTime();
     }
@@ -59,6 +70,18 @@ export class TimerView {
             handler(e);
             this.updateWorkTime();
         });
+    }
+
+    updateWorkValue(workTime) {
+        this.workValue.innerText = formatTime(workTime);
+    }
+
+    updateSetsValue(sets) {
+        this.setsValue.innerText = sets;
+    }
+
+    updateRestValue(restTime) {
+        this.restValue.innerText = formatTime(restTime);
     }
 
     updateRestTime(time) {
