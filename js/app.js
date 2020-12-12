@@ -1,6 +1,6 @@
-import { TimerModel } from './timerModel.mjs';
-import { TimerController } from './timerController.mjs';
-import { TimerView } from './timerView.mjs';
+import { TimerModel } from './timerModel.js';
+import { TimerController } from './timerController.js';
+import { TimerView } from './timerView.js';
 
 class Jukebox {
     constructor() {
@@ -19,6 +19,7 @@ function initApp() {
     let model = new TimerModel();
     let controller = new TimerController(model, jukebox);
     let view = new TimerView(controller);
+    view.bindControls();
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

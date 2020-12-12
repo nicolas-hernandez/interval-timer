@@ -1,25 +1,9 @@
 export class TimerController {
+
     constructor(model, jukebox){
         this.model = model
         this.jukebox = jukebox
     }
-
-    /*
-    handleEvent(e) {
-        e.stopPropagation();
-        switch(e.type){
-            case "click":
-                this.clickHandler(e.target);
-                break;
-            default:
-                console.log(e.target);
-        }
-    }
-
-    clickHandler(target) {
-        console.log(target);
-    }
-    */
 
     getRestTime() {
         return this.model.restValueInt;
@@ -116,10 +100,21 @@ export class TimerController {
     incrementSets(view) {
         let currentSets = this.model.sets;
         if (currentSets < 30) {
-            if (parseInt(this.model.sets) < 1) {
+            if (currentSets < 1) {
                 currentSets = 1;
             }
             currentSets = currentSets + 1;
+        }
+        this.model.sets = currentSets;
+        view.updateSetsValue(this.model.sets);
+    }
+
+    decreaseSets(view) {
+        let currentSets = this.model.sets;
+        if (currentSets <= 1) {
+            currentSets = 1;
+        } else {
+            currentSets = currentSets - 1;
         }
         this.model.sets = currentSets;
         view.updateSetsValue(this.model.sets);
@@ -129,17 +124,38 @@ export class TimerController {
         let workValue = this.model.workValueInt;
         if (workValue < 300) {
             if (workValue < 60) {
-                this.model.workValueInt = workValue + 5;
+                workValue = workValue + 5;
             } else if (workValue < 120) {
-                this.model.workValueInt = workValue + 10;
+                workValue = workValue + 10;
             } else if (workValue < 180) {
-                this.model.workValueInt = workValue + 15;
+                workValue = workValue + 15;
             } else if (workValue < 300) {
-                this.model.workValueInt = workValue + 30;
+                workValue = workValue + 30;
             }
             if (workValue < 5) {
-                this.model.workValueInt = 5;
+                workValue = 5;
             }
+            this.model.workValueInt = workValue;
+            view.updateWorkValue(this.model.workValueInt);
+        }
+    }
+
+    decreaseWork(view) {
+        let workValue = this.model.workValueInt;
+        if (workValue < 300) {
+            if (workValue < 60) {
+                workValue = workValue - 5;
+            } else if (workValue < 120) {
+                workValue = workValue - 10;
+            } else if (workValue < 180) {
+                workValue = workValue - 15;
+            } else if (workValue < 300) {
+                workValue = workValue - 30;
+            }
+            if (workValue < 5) {
+                workValue = 5;
+            }
+            this.model.workValueInt = workValue;
             view.updateWorkValue(this.model.workValueInt);
         }
     }
@@ -149,19 +165,38 @@ export class TimerController {
         if (currentRestTime < 120) {
             if (currentRestTime < 60) {
                 if (currentRestTime < 5) {
-                    this.model.restValueInt = 5;
+                    currentRestTime = 5;
                 } else {
-                    this.model.restValueInt = currentRestTime + 5;
+                    currentRestTime = currentRestTime + 5;
                 }
             } else if (currentRestTime < 120) {
-                this.model.restValueInt = currentRestTime + 10;
+                currentRestTime = currentRestTime + 10;
             }
             if (currentRestTime < 5) {
-                this.model.restValueInt = 3;
+                currentRestTime = 3;
             }
         }
+        this.model.restValueInt = currentRestTime;
         view.updateRestValue(this.model.restValueInt);
     }
 
-            // type = type.target.getAttribute('data-type');
+    decreaseRest(view) {
+        let currentRestTime = this.model.restValueInt;
+        if (currentRestTime < 120) {
+            if (currentRestTime < 60) {
+                if (currentRestTime < 5) {
+                    currentRestTime = 5;
+                } else {
+                    currentRestTime = currentRestTime - 5;
+                }
+            } else if (currentRestTime < 120) {
+                currentRestTime = currentRestTime - 10;
+            }
+            if (currentRestTime < 5) {
+                currentRestTime = 3;
+            }
+        }
+        this.model.restValueInt = currentRestTime;
+        view.updateRestValue(this.model.restValueInt);
+    }
 }
