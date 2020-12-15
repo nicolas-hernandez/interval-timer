@@ -66,7 +66,7 @@ export class TimerController {
                     this.model.stateChrono = 1;
                     this.model.workFinish += 1;                              
                     view.restView();
-                    if (this.workFinish >= this.model.sets){
+                    if (this.model.workFinish >= this.model.sets){
                         clearInterval(this.interval);
                         view.finishView();
                         this.jukebox.playSound('gong');
