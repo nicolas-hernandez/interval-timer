@@ -1,11 +1,10 @@
 {
   "name": "intervaltimer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Interval timer app",
   "main": "main.js",
   "dependencies": {
     "bootstrap": "^4.5.3",
-    "bootstrap-material": "^4.1.51",
     "bootstrap-material-design": "^4.1.3",
     "jquery": "^3.5.1",
     "material-icons": "^0.3.1",
