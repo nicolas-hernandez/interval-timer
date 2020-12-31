@@ -1,6 +1,10 @@
-import { TimerModel } from './timerModel.js';
-import { TimerController } from './timerController.js';
-import { TimerView } from './timerView.js';
+import { ConfigModel } from './config/configModel.js';
+import { ConfigController } from './config/configController.js';
+import { ConfigView } from './config/configView.js';
+import { TimerModel } from './timer/timerModel.js';
+import { TimerController } from './timer/timerController.js';
+import { TimerView } from './timer/timerView.js';
+import { ConfigService } from './configService.js';
 
 class Jukebox {
     constructor() {
@@ -16,9 +20,15 @@ class Jukebox {
 
 function initApp() {
     let jukebox = new Jukebox();
-    let model = new TimerModel();
-    let controller = new TimerController(model, jukebox);
-    let view = new TimerView(controller);
+    let configService = new ConfigService();
+    let configModel = new ConfigModel();
+    let configCtrl = new ConfigController(configModel, configService);
+    let configView = new ConfigView(configCtrl);
+    configView.bindControls();
+
+    let timerModel = new TimerModel();
+    let timerCtrl = new TimerController(timerModel, jukebox, configService);
+    let view = new TimerView(timerCtrl);
     view.bindControls();
 }
 
