@@ -1,4 +1,5 @@
-
+// TODO: this class should handle persisting configs between runs
+// update it every x seconds? trap signals?
 export class ConfigService {
     constructor() {
         this.currentConfig = {
