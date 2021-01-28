@@ -1,8 +1,19 @@
 export class ConfigController {
 
-    constructor(model, configService){
+    constructor(app, model, configService){
+        this.app = app;
         this.model = model;
         this.service = configService;
+    }
+
+    initChrono(view) {
+        this.service.setConfigValues(
+            this.model.sets,
+            this.model.restValueInt,
+            this.model.workValueInt
+        );
+        view.hide();
+        this.app.startTimer();
     }
 
     getRestTime() {
@@ -11,38 +22,6 @@ export class ConfigController {
 
     getWorkTime() {
         return this.model.workValueInt;
-    }
-
-    config() {
-        this.model.state = 1;
-        this.model.positionNavigator = 0;
-        this.model.workFinish = 0;
-    }
-
-    startWork() {
-        this.model.stateChrono = 2;
-        this.jukebox.playSound('alert');
-    }
-
-    pause() {
-        this.model.isPaused = true;
-    }
-
-    resume() {
-        this.model.isPaused = false;
-    }
-
-    configureTimer(sets, restTime, workTime) {
-        this.model.sets = sets;
-        this.model.restTime = restTime;
-        this.model.workTime = workTime;
-    }
-
-
-    resetTimer() {
-        clearInterval(this.interval);
-        this.model.stateChrono = 1;
-        this.model.workFinish = 0;
     }
 
     // TODO: fix the if logic in these functions

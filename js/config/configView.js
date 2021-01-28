@@ -1,15 +1,9 @@
-function formatTime(time) {
-    let seg = time%60;
-    if (seg < 10) {
-        seg = "0" + seg;
-    }
-    let min = parseInt(time/60);
-    return min+":"+seg;
-}
+import { formatTime } from '../util.js';
 
 export class ConfigView {
     constructor(controller) {
         this.controller = controller;
+        this.setDiv = document.getElementById('setDiv');
         this.play = document.getElementById('play');
         this.setsValue = document.getElementById('setsValue');
         this.workValue = document.getElementById('workValue');
@@ -20,7 +14,7 @@ export class ConfigView {
     }
 
     bindControls() {
-        this.play.addEventListener('click', (e) => this.initChrono());
+        this.play.addEventListener('click', (e) => this.controller.initChrono(this));
 
         this.bindConfigButton(document.getElementById('workLess'), 'click', (e) => {
             this.controller.decreaseWork(this);
@@ -75,38 +69,17 @@ export class ConfigView {
         this.workTime = actualWorkTime + restTime;
         this.workTimeElement.innerText = formatTime(this.workTime);
     }
-
-    restView() {
-        this.textChrono.innerText = "Rest";
-        document.getElementsByTagName("html")[0].classList.remove('work');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('work');
-        document.getElementsByTagName("html")[0].classList.add('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.add('rest');
-    }
-
-    workView() {
-        this.textChrono.innerText = "Work";
-        document.getElementsByTagName("html")[0].classList.remove('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
-        document.getElementsByTagName("html")[0].classList.add('work');
-        document.getElementsByClassName("jumbotron")[0].classList.add('work');
-    }
-
-    finishView() {
-        this.textChrono.innerText = "Finish !!!";
-    }
-
-    initChrono() {
-    }
         
-    showConfig() {
-        this.noSleepVideo.pause();
+    show() {
+        //TODO REFACTOR
         document.getElementsByTagName("html")[0].classList.remove('work');
         document.getElementsByClassName("jumbotron")[0].classList.remove('work');
         document.getElementsByTagName("html")[0].classList.remove('rest');
         document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
         this.setDiv.classList.remove("hide");
-        this.chronoDiv.classList.add("hide");
     }
 
+    hide() {
+        this.setDiv.classList.add("hide");
+    }
 }

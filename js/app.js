@@ -5,31 +5,45 @@ import { TimerModel } from './timer/timerModel.js';
 import { TimerController } from './timer/timerController.js';
 import { TimerView } from './timer/timerView.js';
 import { ConfigService } from './configService.js';
+import { Jukebox } from './util.js';
 
-class Jukebox {
+
+class App {
     constructor() {
-        this.audio = new Audio();
+        this.noSleepVideo = document.getElementById('noSleepVideo');
+        let jukebox = new Jukebox();
+        let configService = new ConfigService();
+        let configModel = new ConfigModel();
+        let configCtrl = new ConfigController(this, configModel, configService);
+        this.configView = new ConfigView(configCtrl);
+        let timerModel = new TimerModel();
+        let timerCtrl = new TimerController(this, timerModel, jukebox, configService);
+        this.timerView = new TimerView(timerCtrl);
     }
 
-    playSound(srcSound){
-        this.audio.src = "./sound/" + srcSound + ".ogg";
-        this.audio.play();
+    initListeners() {
+        this.configView.bindControls();
+        this.timerView.bindControls();
     }
+
+    // This kind of works for now. If I ever had more "pages".
+    // It would be worth having a component object that contained the model, controller and view
+    // And a common interface that would let me easily switch between them
+    startTimer() {
+        // this.configView.hide();
+        this.noSleepVideo.play();
+        this.timerView.initChrono();
+    }
+
+    showConfig() {
+        this.noSleepVideo.pause();
+        this.configView.show();
+    }
+
 }
 
 
-function initApp() {
-    let jukebox = new Jukebox();
-    let configService = new ConfigService();
-    let configModel = new ConfigModel();
-    let configCtrl = new ConfigController(configModel, configService);
-    let configView = new ConfigView(configCtrl);
-    configView.bindControls();
-
-    let timerModel = new TimerModel();
-    let timerCtrl = new TimerController(timerModel, jukebox, configService);
-    let view = new TimerView(timerCtrl);
-    view.bindControls();
-}
-
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', (e) => {
+    let app = new App();
+    app.initListeners();
+});
