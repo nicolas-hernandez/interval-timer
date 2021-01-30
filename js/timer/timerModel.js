@@ -1,9 +1,11 @@
+export const timerState = {"rest":1, "work":2}
+
 export class TimerModel {
     constructor(){
         this.timeReset = 3000;
         this.positionNavigator = 0;
         this.state = 1; // 1 -> config, 2 -> chrono
-        this.stateChrono = 1;  // 1 -> rest, 2 -> work
+        this.stateChrono = timerState.rest;
         this.workValueInt = 30;
         this.workFinish = 0;
         this.isPaused = false;
@@ -13,8 +15,6 @@ export class TimerModel {
         this.timeReset = 3000;
         this.positionNavigator = 0;
         this.interval = null;
-        this.intervalButton = null;
-
     }
 
     configState() {
@@ -26,7 +26,7 @@ export class TimerModel {
     }
 
     getState() {
-        return this.state; 
+        return this.stateChrono; 
     }
 
 }
