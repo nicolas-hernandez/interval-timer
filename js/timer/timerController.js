@@ -32,8 +32,8 @@ export class TimerController {
     configureTimer() {
         let configs = this.config.getCurrentConfig();
         this.model.sets = configs.sets;
-        this.model.restTime = configs.restTime;
-        this.model.workTime = configs.workTime;
+        this.model.restValueInt = configs.timeRest;
+        this.model.workValueInt = configs.timeWork;
     }
 
     initTimer(view) {
@@ -57,8 +57,9 @@ export class TimerController {
         view.finishView();
         this.jukebox.playSound('gong');
         this.model.workFinish = 0;
-        setTimeout(function () {
-            view.showConfig();
+        setTimeout( () => {
+            view.hide();
+            this.app.showConfig();
         }, this.model.timeReset);
     }
 

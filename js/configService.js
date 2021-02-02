@@ -10,11 +10,9 @@ export class ConfigService {
     }
 
     setConfigValues(setsAmount, restTime, workTime) {
-        this.currentConfig = {
-            sets: setsAmount,
-            timeRest: restTime,
-            timeWork: workTime
-        };
+        this.currentConfig.sets = setsAmount;
+        this.currentConfig.timeRest = restTime;
+        this.currentConfig.timeWork = workTime;
     }
 
     getCurrentConfig() {

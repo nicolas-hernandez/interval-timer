@@ -71,11 +71,8 @@ export class ConfigView {
     }
         
     show() {
-        //TODO REFACTOR
-        document.getElementsByTagName("html")[0].classList.remove('work');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('work');
-        document.getElementsByTagName("html")[0].classList.remove('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
+        document.getElementById("principalDiv").classList.remove('work');
+        document.getElementById("principalDiv").classList.remove('rest');
         this.setDiv.classList.remove("hide");
     }
 

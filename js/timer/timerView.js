@@ -1,5 +1,9 @@
 import { formatTime } from '../util.js';
 
+const CSS_WORK = 'is-danger';
+const CSS_REST = 'is-info';
+
+
 export class TimerView {
     constructor(controller) {
         this.controller = controller;
@@ -55,18 +59,16 @@ export class TimerView {
 
     restView() {
         this.textChrono.innerText = "Rest";
-        document.getElementsByTagName("html")[0].classList.remove('work');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('work');
-        document.getElementsByTagName("html")[0].classList.add('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.add('rest');
+        //TODO move this over to the app
+        document.getElementById('principalDiv').classList.remove(CSS_WORK);
+        document.getElementById('principalDiv').classList.add(CSS_REST);
     }
 
     workView() {
         this.textChrono.innerText = "Work";
-        document.getElementsByTagName("html")[0].classList.remove('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.remove('rest');
-        document.getElementsByTagName("html")[0].classList.add('work');
-        document.getElementsByClassName("jumbotron")[0].classList.add('work');
+        //TODO move this over to the app
+        document.getElementById('principalDiv').classList.remove(CSS_REST);
+        document.getElementById('principalDiv').classList.add(CSS_WORK);
     }
 
     finishView() {
@@ -78,10 +80,7 @@ export class TimerView {
 
         this.cycle.innerText = (this.workFinish + 1) + "/" + this.setsValue.innerText;
 
-        this.textChrono.innerText = "Rest";
-        document.getElementById('principalDiv').classList.add('rest');
-        document.getElementsByTagName("html")[0].classList.add('rest');
-        document.getElementsByClassName("jumbotron")[0].classList.add('rest');
+        this.restView();
 
         this.controller.configureTimer();
         this.controller.initTimer(this);
@@ -90,34 +89,38 @@ export class TimerView {
     resetChrono() {
         this.controller.pause();
 
-        this.modalReset.classList.remove('hide');
+        this.modalReset.classList.add('is-active');
 
         let okReset = document.getElementById("okReset");
         let closeReset = document.getElementById("closeReset");
         let closeResetFunction;
         okReset.addEventListener("click", () => {
-            this.modalReset.classList.add('hide');
+            this.modalReset.classList.remove('is-active');
             this.hide();
             this.controller.resetTimer();
         });
 
         closeReset.addEventListener("click", () => {        
             this.controller.resume();
-            this.modalReset.classList.add('hide');
+            this.modalReset.classList.remove('is-active');
         });
 
     }
         
     pauseChrono() {
         this.controller.pause();
-        this.modalPause.classList.remove('hide');
+        this.modalPause.classList.add('is-active');
         document.getElementById('closePause').addEventListener('click', () => {                  
             this.controller.resume();
-            this.modalPause.classList.add('hide');
+            this.modalPause.classList.remove('is-active');
         });
     }
 
+    
+
     hide() {
+        document.getElementById('principalDiv').classList.remove(CSS_REST);
+        document.getElementById('principalDiv').classList.remove(CSS_WORK);
         this.chronoDiv.classList.add("hide");
     }
 
